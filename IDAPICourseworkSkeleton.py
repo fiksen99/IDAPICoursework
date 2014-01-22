@@ -19,10 +19,18 @@ def Prior(theData, root, noStates):
 # it is assumed that the states are designated by consecutive integers starting with 0
 def CPT(theData, varC, varP, noStates):
     cPT = zeros((noStates[varC], noStates[varP]), float )
+    totals = zeros(noStates[varC], float)
+    for row in theData:
+      cPT[row[varC]][row[varP]] += 1.0
+      totals[row[varC]] += 1.0
+    x = []
+    for row, total in zip(cPT, totals):
+      x += [map(lambda x: x/total, row)]
+#    for total in totals
 # Coursework 1 task 2 should be inserte4d here
    
 # end of coursework 1 task 2
-    return cPT
+    return x
 # Function to calculate the joint probability table of two variables in the data set
 def JPT(theData, varRow, varCol, noStates):
     jPT = zeros((noStates[varRow], noStates[varCol]), float )
@@ -213,6 +221,9 @@ print noDataPoints
 print theData[0:2]
 prior = Prior(theData, 0, noStates)
 print prior
+cpt = CPT(theData, 1, 0, noStates)
+import pprint
+pprint.pprint(cpt)
 #AppendList("results.txt", prior)
 #
 # continue as described
