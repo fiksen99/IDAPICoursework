@@ -14,10 +14,7 @@ def Prior(theData, root, noStates):
       prior[state] += 1.0
     prior = map(lambda x: x/len(theData), prior)
     return prior
-      
-    
-# end of Coursework 1 task 1
-    return prior
+  
 # Function to compute a CPT with parent node varP and xchild node varC from the data array
 # it is assumed that the states are designated by consecutive integers starting with 0
 def CPT(theData, varC, varP, noStates):
