@@ -200,11 +200,13 @@ def PrincipalComponents(theData):
 #
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
 theData = array(datain)
-AppendString("results.txt","Coursework One Results by dfg")
-AppendString("results.txt","") #blank line
-AppendString("results.txt","The prior probability of node 0")
+#AppendString("results.txt","Coursework One Results by dfg")
+#AppendString("results.txt","") #blank line
+#AppendString("results.txt","The prior probability of node 0")
+print noStates
 prior = Prior(theData, 0, noStates)
-AppendList("results.txt", prior)
+print prior
+#AppendList("results.txt", prior)
 #
 # continue as described
 #
