@@ -9,6 +9,12 @@ from numpy import *
 # Function to compute the prior distribution of the variable root from the data set
 def Prior(theData, root, noStates):
     prior = zeros((noStates[root]), float )
+    for row in theData:
+      state = row[root]
+      prior[state] += 1.0
+    prior = map(lambda x: x/len(theData), prior)
+    return prior
+      
     
 # end of Coursework 1 task 1
     return prior
@@ -203,7 +209,11 @@ theData = array(datain)
 #AppendString("results.txt","Coursework One Results by dfg")
 #AppendString("results.txt","") #blank line
 #AppendString("results.txt","The prior probability of node 0")
+print noRoots
 print noStates
+print noStates[0]
+print noDataPoints
+print theData[0:2]
 prior = Prior(theData, 0, noStates)
 print prior
 #AppendList("results.txt", prior)
