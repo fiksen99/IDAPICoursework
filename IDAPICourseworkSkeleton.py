@@ -39,16 +39,15 @@ def JPT(theData, varRow, varCol, noStates):
     for i, row in enumerate(jPT):
       for j, col in enumerate(row):
         jPT[i][j] = col/total
-#Coursework 1 task 3 should be inserted here 
-    
-# end of coursework 1 task 3
     return jPT
 #
 # Function to convert a joint probability table to a conditional probability table
 def JPT2CPT(aJPT):
-#Coursework 1 task 4 should be inserted here 
-   
-# coursework 1 taks 4 ends here
+    totals = zeros(len(aJPT[0]), float)
+    for row in aJPT:
+      totals = map(lambda x,y: x+y, row, totals)
+    for i, row in enumerate(aJPT):
+      aJPT[i] = map(lambda x,y: x/y, row, totals)
     return aJPT
 
 #
@@ -233,6 +232,11 @@ pprint.pprint(cpt)
 jpt = JPT(theData, 1,3, noStates)
 
 pprint.pprint(jpt)
+
+cpt = JPT2CPT(jpt)
+
+pprint.pprint(cpt)
+
 #AppendList("results.txt", prior)
 #
 # continue as described
