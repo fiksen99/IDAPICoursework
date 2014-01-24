@@ -26,14 +26,19 @@ def CPT(theData, varC, varP, noStates):
     x = []
     for row, total in zip(cPT, totals):
       x += [map(lambda x: x/total, row)]
-#    for total in totals
-# Coursework 1 task 2 should be inserte4d here
-   
-# end of coursework 1 task 2
     return x
+  
 # Function to calculate the joint probability table of two variables in the data set
 def JPT(theData, varRow, varCol, noStates):
     jPT = zeros((noStates[varRow], noStates[varCol]), float )
+    for row in theData:
+      rowState = row[varRow]
+      colState = row[varCol]
+      jPT[rowState][colState] += 1.0
+    total = len(theData)
+    for i, row in enumerate(jPT):
+      for j, col in enumerate(row):
+        jPT[i][j] = col/total
 #Coursework 1 task 3 should be inserted here 
     
 # end of coursework 1 task 3
@@ -224,6 +229,10 @@ print prior
 cpt = CPT(theData, 1, 0, noStates)
 import pprint
 pprint.pprint(cpt)
+
+jpt = JPT(theData, 1,3, noStates)
+
+pprint.pprint(jpt)
 #AppendList("results.txt", prior)
 #
 # continue as described
