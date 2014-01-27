@@ -19,13 +19,13 @@ def Prior(theData, root, noStates):
 # it is assumed that the states are designated by consecutive integers starting with 0
 def CPT(theData, varC, varP, noStates):
     cPT = zeros((noStates[varC], noStates[varP]), float )
-    totals = zeros(noStates[varC], float)
+    totals = zeros(noStates[varP], float)
     for row in theData:
       cPT[row[varC]][row[varP]] += 1.0
-      totals[row[varC]] += 1.0
+      totals[row[varP]] += 1.0
     x = []
-    for row, total in zip(cPT, totals):
-      x += [map(lambda x: x/total, row)]
+    for row in cPT:
+      x += [map(lambda x,y: x/y, row, totals)]
     return x
   
 # Function to calculate the joint probability table of two variables in the data set
@@ -213,34 +213,49 @@ def PrincipalComponents(theData):
 #
 # main program part for Coursework 1
 #
+from pprint import pprint
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
-theData = array(datain)
-#AppendString("results.txt","Coursework One Results by dfg")
-#AppendString("results.txt","") #blank line
-#AppendString("results.txt","The prior probability of node 0")
-print noRoots
 print noStates
-print noStates[0]
-print noDataPoints
-print theData[0:2]
+theData = array(datain)
 prior = Prior(theData, 0, noStates)
-print prior
-cpt = CPT(theData, 1, 0, noStates)
-import pprint
-pprint.pprint(cpt)
+print 'prior'
+pprint(prior)
+cpt = CPT(theData, 2, 0, noStates)
+print 'cpt P(2|0)'
+pprint(cpt)
+jpt = JPT(theData, 2, 0, noStates)
+print 'jpt P(2&0)'
+pprint(jpt)
+j2cpt = JPT2CPT(jpt)
+print 'cpt P(2|0) from jpt P(2&0)'
+pprint(jpt)
+print '------------------'
+from pprint import pprint
+network = []
+network += [Prior(theData, 0, noStates)]
+for i in range(1, 5):
+    network += [CPT(theData, i, 0, noStates)]
+
+query = [1,0,3,2,0]
+print network[0]
+rpdf = Query(query, network)
+pprint(rpdf)
 
 jpt = JPT(theData, 1,3, noStates)
 
-pprint.pprint(jpt)
-
 cpt = JPT2CPT(jpt)
 
-pprint.pprint(cpt)
+Prior(theData, 0, noStates)
 
+#AppendString("results.txt","Coursework One Results by af1410")
+#AppendString("results.txt","") #blank line
+#AppendString("results.txt","The prior probability of node 0")
 #AppendList("results.txt", prior)
+#AppendString("results.txt","") #blank line
 #
 # continue as described
 #
 #
+
 
 
