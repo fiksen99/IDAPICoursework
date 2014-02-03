@@ -13,7 +13,7 @@ def Prior(theData, root, noStates):
       state = row[root]
       prior[state] += 1.0
     prior = map(lambda x: x/len(theData), prior)
-    return prior
+    return array(prior)
   
 # Function to compute a CPT with parent node varP and xchild node varC from the data array
 # it is assumed that the states are designated by consecutive integers starting with 0
@@ -26,7 +26,7 @@ def CPT(theData, varC, varP, noStates):
     x = []
     for row in cPT:
       x += [map(lambda x,y: x/y, row, totals)]
-    return x
+    return array(x)
   
 # Function to calculate the joint probability table of two variables in the data set
 def JPT(theData, varRow, varCol, noStates):
@@ -39,21 +39,32 @@ def JPT(theData, varRow, varCol, noStates):
     for i, row in enumerate(jPT):
       for j, col in enumerate(row):
         jPT[i][j] = col/total
-    return jPT
+    return array(jPT)
 #
 # Function to convert a joint probability table to a conditional probability table
 def JPT2CPT(aJPT):
     totals = zeros(len(aJPT[0]), float)
+    j2c = []
     for row in aJPT:
       totals = map(lambda x,y: x+y, row, totals)
-    for i, row in enumerate(aJPT):
-      aJPT[i] = map(lambda x,y: x/y, row, totals)
-    return aJPT
+    for row in aJPT:
+      j2c += [map(lambda x,y: x/y, row, totals)]
+    return array(j2c)
 
 #
 # Function to query a naive Bayesian network
 def Query(theQuery, naiveBayes): 
     rootPdf = zeros((naiveBayes[0].shape[0]), float)
+    rootPdf = naiveBayes[0]
+
+    naiveBayes = naiveBayes[1:]
+    for i, tab in enumerate(naiveBayes):
+        state = theQuery[i]
+        for j, val in enumerate(prior):
+            rootPdf[j] *= tab[state][j]
+    total = sum(rootPdf)
+    rootPdf = map(lambda x: x/total, rootPdf)
+
 # Coursework 1 task 5 should be inserted here
   
 
@@ -213,49 +224,55 @@ def PrincipalComponents(theData):
 #
 # main program part for Coursework 1
 #
-from pprint import pprint
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
-print noStates
 theData = array(datain)
 prior = Prior(theData, 0, noStates)
-print 'prior'
-pprint(prior)
+
 cpt = CPT(theData, 2, 0, noStates)
-print 'cpt P(2|0)'
-pprint(cpt)
+
 jpt = JPT(theData, 2, 0, noStates)
-print 'jpt P(2&0)'
-pprint(jpt)
+
 j2cpt = JPT2CPT(jpt)
-print 'cpt P(2|0) from jpt P(2&0)'
-pprint(jpt)
-print '------------------'
-from pprint import pprint
+
 network = []
 network += [Prior(theData, 0, noStates)]
-for i in range(1, 5):
+for i in range(1, 6):
     network += [CPT(theData, i, 0, noStates)]
 
-query = [1,0,3,2,0]
-print network[0]
-rpdf = Query(query, network)
-pprint(rpdf)
+query = [4,0,0,0,5]
+rpdf1 = Query(query, network)
 
-jpt = JPT(theData, 1,3, noStates)
+network = []
+network += [Prior(theData, 0, noStates)]
+for i in range(1, 6):
+    network += [CPT(theData, i, 0, noStates)]
 
-cpt = JPT2CPT(jpt)
-
-Prior(theData, 0, noStates)
-
-#AppendString("results.txt","Coursework One Results by af1410")
-#AppendString("results.txt","") #blank line
-#AppendString("results.txt","The prior probability of node 0")
-#AppendList("results.txt", prior)
-#AppendString("results.txt","") #blank line
-#
-# continue as described
-#
-#
+query = [6,5,2,5,5]
+rpdf2 = Query(query, network)
 
 
+AppendString("IDAPIResults01.txt","Coursework One Results by af1410")
+AppendString("IDAPIResults01.txt","") #blank line
 
+AppendString("IDAPIResults01.txt","The prior probability of node 0")
+AppendList("IDAPIResults01.txt", prior)
+AppendString("IDAPIResults01.txt","") #blank line
+
+AppendString("IDAPIResults01.txt","The conditional probability matrix P(2|0)")
+AppendString("IDAPIResults01.txt", cpt)
+AppendString("IDAPIResults01.txt","") #blank line
+
+AppendString("IDAPIResults01.txt","The joint probability matrix P(2&0)")
+AppendString("IDAPIResults01.txt", jpt)
+AppendString("IDAPIResults01.txt","") #blank line
+
+AppendString("IDAPIResults01.txt","The conditional probability matrix P(2|0) calculated from the joint probability matrix P(2&0)")
+AppendString("IDAPIResults01.txt", j2cpt)
+AppendString("IDAPIResults01.txt","") #blank line
+
+AppendString("IDAPIResults01.txt","The result of Query [4,0,0,0,5]")
+AppendList("IDAPIResults01.txt",array(rpdf1))
+AppendString("IDAPIResults01.txt","") #blank line
+
+AppendString("IDAPIResults01.txt","The result of Query [6,5,2,5,5]")
+AppendList("IDAPIResults01.txt",array(rpdf2))
